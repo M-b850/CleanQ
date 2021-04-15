@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # apps:
     'core.apps.CoreConfig',
     'user.apps.UserConfig',
+    'clinic.apps.ClinicConfig',
 ]
 
 MIDDLEWARE = [
