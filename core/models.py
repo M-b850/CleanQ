@@ -51,3 +51,25 @@ class Clinic(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Reservation(models.Model):
+    """Reservation object"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    created_date = models.DateTimeField(auto_now=True)
+    clinic = models.ForeignKey(
+        'Clinic',
+        on_delete=models.CASCADE
+    )
+    up_date = models.DateTimeField()
+    comment = models.TextField(blank=True)
+    canceled = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ['up_date', 'clinic']
+
+    def __str__(self):
+        return f'{self.clinic} {self.up_date}'

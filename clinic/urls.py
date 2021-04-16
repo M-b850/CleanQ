@@ -5,6 +5,7 @@ from clinic import views
 
 router = DefaultRouter()
 router.register('clinics', views.ClinicViewSet)
+router.register('My-Reservations', views.ReservationViewSet)
 
 app_name = 'clinic'
 
