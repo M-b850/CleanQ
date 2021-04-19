@@ -1,41 +1,39 @@
-from rest_framework import generics, viewsets, mixins
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+from rest_framework import generics, authentication, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 
-from core.models import Clinic, Reservation
+from clinic.serializers import ClinicSerializer
+from core.models import Clinic
 
-from clinic import serializers
+class CreateClinicView(generics.CreateAPIView):
+    """Create a new clinic"""
+    serializer_class = ClinicSerializer
 
-
-class ClinicViewSet(viewsets.GenericViewSet,
-                    mixins.ListModelMixin,
-                    mixins.CreateModelMixin):
-    """Manage Database in database"""
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+class WatchClinicView(APIView):
+    """Watch the clinic user"""
+    serializer_class = ClinicSerializer
     queryset = Clinic.objects.all()
-    serializer_class = serializers.ClinicSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    
+    def get_object(self, pk):
+        try:
+            return Clinic.objects.get(pk=pk)
+        except Clinic.DoesNotExist:
+            raise Http404
 
-    def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.filter(user=self.request.user).order_by('name')
-
-    def perform_create(self, serializer):
-        """Create a new clinic"""
-        serializer.save(user=self.request.user)
-
-
-class ReservationViewSet(viewsets.ModelViewSet):
-    """Manage Reservations in the database"""
-    serializer_class = serializers.ReservationSerializer
-    queryset = Reservation.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        """Retrieve for authenticated user"""
-        return self.queryset.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        """Create a new Reservation"""
-        serializer.save(user=self.request.user)
+    def get(self, request, format=None):
+        if request.user.type == 'CLINIC':
+            clinic_pk = Clinic.objects.filter(user_id=request.user.pk)
+            clinic = self.get_object(request.user.pk)
+            serializer = ClinicSerializer(clinic)
+            return Response(serializer.data)
+        else:
+            raise PermissionDenied(
+                {
+                    "Message": "You don't have permission to access",
+                    "Help": "Create and Clinic account." 
+                }
+            )

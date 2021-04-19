@@ -1,14 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
 from clinic import views
 
-router = DefaultRouter()
-router.register('clinics', views.ClinicViewSet)
-router.register('My-Reservations', views.ReservationViewSet)
 
 app_name = 'clinic'
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('create/', views.CreateClinicView.as_view(), name='create'),
+    path('me/', views.WatchClinicView.as_view(), name='me')
 ]
