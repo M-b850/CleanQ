@@ -13,12 +13,12 @@ class ModelTest(TestCase):
             email=email,
             password=password
         )
-        clinic_name = 'Zakarya Razi'
+        clinic_cname = 'Zakarya Razi'
         clinic = Clinic.objects.create(
-            name='Zakarya Razi',
+            cname='Zakarya Razi',
             user=user,
         )
-        self.assertEqual(clinic.name, clinic_name)
+        self.assertEqual(clinic.cname, clinic_cname)
         self.assertTrue(clinic.user.check_password(password))
         self.assertEqual(clinic.owner_id, user.pk)
         self.assertTrue(clinic.user.email, email)
@@ -31,7 +31,7 @@ class ModelTest(TestCase):
             password='my-password@'
         )
         clinic = Clinic.objects.create(
-            name='Zakarya Razi',
+            cname='Zakarya Razi',
             user=user,
         )
         reserve = Reservation.objects.create(
