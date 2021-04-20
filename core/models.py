@@ -64,7 +64,7 @@ class Clinic(models.Model):
             return super().save(*args, **kwargs) # Call the real save() method
 
     def __str__(self):
-        return self.name
+        return self.cname
 
 
 class Reservation(models.Model):
