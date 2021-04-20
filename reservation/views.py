@@ -48,13 +48,8 @@ class ListReservationView(APIView):
         return Response(serializer.data)
 
 
-class ListClinicsView(APIView):
+class ListClinicsView(generics.ListAPIView):
     serializer_class = ClinicSerializer
     queryset = Clinic.objects.all()
     authentication_classes = (authentication.TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, format=None):
-        reserv = self.queryset.all()
-        serializer = ClinicSerializer(reserv, many=True)
-        return Response(serializer.data)
