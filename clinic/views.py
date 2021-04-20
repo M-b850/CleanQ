@@ -3,6 +3,9 @@ from rest_framework import generics, authentication, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+from django.shortcuts import get_list_or_404
 
 from clinic.serializers import ClinicSerializer
 from core.models import Clinic
@@ -15,25 +18,18 @@ class WatchClinicView(APIView):
     """Watch the clinic user"""
     serializer_class = ClinicSerializer
     queryset = Clinic.objects.all()
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (authentication.TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
     
-    def get_object(self, pk):
-        try:
-            return Clinic.objects.get(pk=pk)
-        except Clinic.DoesNotExist:
-            raise Http404
-
     def get(self, request, format=None):
         if request.user.type == 'CLINIC':
-            clinic_pk = Clinic.objects.filter(user_id=request.user.pk)
-            clinic = self.get_object(request.user.pk)
-            serializer = ClinicSerializer(clinic)
+            clinic = get_list_or_404(Clinic, pk=request.user.pk)
+            serializer = ClinicSerializer(clinic, many=True)
             return Response(serializer.data)
         else:
             raise PermissionDenied(
                 {
                     "Message": "You don't have permission to access",
-                    "Help": "Create and Clinic account." 
+                    "Help": "Create a Clinic account." 
                 }
             )
