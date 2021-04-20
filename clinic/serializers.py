@@ -21,5 +21,6 @@ class ClinicSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         user = get_user_model().objects.create_user(**user_data)
         user.type = 'CLINIC'
+        user.save()
         clinic = Clinic.objects.create(user=user, **validated_data)
         return clinic

@@ -7,5 +7,6 @@ app_name = 'clinic'
 
 urlpatterns = [
     path('create/', views.CreateClinicView.as_view(), name='create'),
-    path('me/', views.WatchClinicView.as_view(), name='me')
+    path('me/', views.WatchClinicView.as_view(), name='me'),
+    path('reserved/', views.WatchReservedForClinic.as_view(), name='reserve-list')
 ]

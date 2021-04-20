@@ -7,7 +7,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from django.shortcuts import get_list_or_404
 
 from clinic.serializers import ClinicSerializer
-from core.models import Clinic
+from reservation.serializers import ReservationSerializer
+from core.models import Clinic, Reservation
 
 
 class CreateClinicView(generics.CreateAPIView):
@@ -24,7 +25,7 @@ class WatchClinicView(APIView):
 
     def get(self, request):
         if request.user.type == 'CLINIC':
-            clinic = get_list_or_404(Clinic, pk=request.user.pk)
+            clinic = get_list_or_404(Clinic, user_id=self.request.user.pk)
             serializer = ClinicSerializer(clinic, many=True)
             return Response(serializer.data)
         else:
@@ -34,3 +35,26 @@ class WatchClinicView(APIView):
                     "Help": "Create a Clinic account."
                 }
             )
+
+class WatchReservedForClinic(generics.ListAPIView):
+    """List of reserved for clinic"""
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    authentication_classes = (authentication.TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        if self.request.user.type == 'CLINIC':
+            queryset = self.queryset
+            return queryset.filter(clinic__user=self.request.user)
+        raise PermissionDenied(
+            {
+                "Message": "You don't have permission to access",
+                "Help": "Create a Clinic account."
+            }
+        )
+
+    def get(self, request):
+        reserves = self.get_queryset()
+        serializer = ReservationSerializer(reserves, many=True)
+        return Response(serializer.data)
