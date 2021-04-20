@@ -32,7 +32,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Types(models.TextChoices):
         CLINIC = 'CLINIC', 'Clinic'
         PATIENT = 'PATIENT', 'Patient'
-    
 
     type = models.CharField(_('Type'), max_length=50, choices=Types.choices, default=Types.PATIENT)
     email = models.EmailField(max_length=255, unique=True)
@@ -61,7 +60,7 @@ class Clinic(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.type = User.Types.CLINIC
-            return super().save(*args, **kwargs) # Call the real save() method
+            return super().save(*args, **kwargs)  # Call the real save() method
 
     def __str__(self):
         return self.cname

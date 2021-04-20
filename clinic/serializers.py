@@ -1,14 +1,13 @@
-from core.models import Clinic, Reservation
+from core.models import Clinic
 from user.serializers import UserSerializer
 
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth import get_user_model, authenticate
 
 
 class ClinicSerializer(serializers.ModelSerializer):
-    '''Serializer for clinic object'''
+    """Serializer for clinic object"""
     user = UserSerializer()
 
     class Meta:

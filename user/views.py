@@ -1,15 +1,13 @@
-from rest_framework import generics
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from rest_framework import generics, authentication, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import filters
 
 from user.serializers import AuthTokenSerializer, UserSerializer
 
 from core.models import User
+
 
 class CreateUserView(generics.CreateAPIView):
     """Create a new user in the system"""

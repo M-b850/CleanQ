@@ -2,8 +2,9 @@ from core.models import Reservation
 
 from rest_framework import serializers
 
+
 class ReservationSerializer(serializers.ModelSerializer):
-    '''Serilize Reservation'''
+    """Serialize Reservation"""
     
     class Meta:
         model = Reservation
@@ -20,4 +21,3 @@ class ReservationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         reserve = Reservation.objects.create(**validated_data)
         return reserve
-
