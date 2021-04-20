@@ -32,7 +32,7 @@ class ListReservationView(APIView):
     
     def get_queryset(self):
         lt = self.request.query_params.get('lt')
-        gte = self.request.query_params.get('rte')
+        gte = self.request.query_params.get('gte')
         queryset = self.queryset
 
         if lt: # Past
