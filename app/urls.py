@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user.urls')),
     path('api/clinic/', include('clinic.urls')),
+    path('api/reservation/', include('reservation.urls')),
+    path('api/user/', include('rest_framework.urls')),
 ]
